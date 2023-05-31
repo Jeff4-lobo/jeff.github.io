@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Available Lands</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Available Lands</h1>
+  <button onclick="showAddForm()">Add Land</button>
+  <div id="addForm" style="display: none;">
+    <h2>Add Land</h2>
+    <form>
+      <label for="location">Location:</label>
+      <input type="text" id="location" name="location" required><br><br>
+      <label for="size">Size:</label>
+      <input type="text" id="size" name="size" required><br><br>
+      <label for="price">Price:</label>
+      <input type="text" id="price" name="price" required><br><br>
+      <button type="submit" onclick="addLand()">Submit</button>
+    </form>
+  </div>
+
+  <table id="landsTable">
+    <tr>
+      <th>Location</th>
+      <th>Size</th>
+      <th>Price</th>
+      <th>Remove</th>
+    </tr>
+
+    <tr>
+      <td>Land A</td>
+      <td>
+        <span id="land_A_size" onclick="showSubdivisionBox('A')">4000 sq. ft.</span>
+        <div id="subdivision_A_box" style="display: none;">
+          <input type="text" id="subdivision_A_length" placeholder="Length">
+          <span> by </span>
+          <input type="text" id="subdivision_A_width" placeholder="Width">
+          <input type="text" id="buyer_A" placeholder="Buyer Name">
+          <button onclick="subdivideLand('A')">Subdivide</button>
+        </div>
+      </td>
+      <td id="land_A_price">$400,000</td>
+      <td><button onclick="removeLand(this)">Remove</button></td>
+    </tr>
+
+    <tr>
+      <td>Land B</td>
+      <td>2000 sq. ft.</td>
+      <td>$200,000</td>
+      <td><button onclick="removeLand(this)">Remove</button></td>
+    </tr>
+
+    <tr>
+      <td>Land C</td>
+      <td>1500 sq. ft.</td>
+      <td>$150,000</td>
+      <td><button onclick="removeLand(this)">Remove</button></td>
+    </tr>
+  </table>
+
+  <script>
+    var pricePerSqFt = 100000 / 1000; // $100,000 / 1000 sq ft
+
+    function showAddForm() {
+      var addForm = document.getElementById("addForm");
+      addForm.style.display = "block";
+    }
+
+    function addLand() {
+      var location = document.getElementById("location").value;
+      var size = document.getElementById("size").value;
+      var price = document.getElementById("price").value;
+
+      var table = document.getElementById("landsTable");
+      var row = table.insertRow(-1);
+      var locationCell = row.insertCell(0);
+      var sizeCell = row.insertCell(1);
+      var priceCell = row.insertCell(2);
+      var removeCell = row.insertCell(3);
+
+      locationCell.innerHTML = location;
+      sizeCell.innerHTML = size;
+      priceCell.innerHTML = "$" + (parseInt(size) * pricePerSqFt).toLocaleString();
+      removeCell.innerHTML = "<button onclick=\"removeLand(this)\">Remove</button>";
+
+      document.getElementById("location").value = "";
+      document.getElementById("size").value = "";
+      document.getElementById("price").value = "";
+
+      var addForm = document.getElementById("addForm");
+      addForm.style.display = "none";
+    }
+
+    function removeLand(button) {
+      var row = button.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+    }
+
+    function showSubdivisionBox(landId) {
+      var landSizeElement = document.getElementById("land_" + landId + "_size");
+      var subdivisionBox = document.getElementById("subdivision_" + landId + "_box");
+
+      landSizeElement.style.display = "none";
+      subdivisionBox.style.display = "block";
+    }
+
+    function subdivideLand(landId) {
+      var lengthInput = document.getElementById("subdivision_" + landId + "_length");
+      var widthInput = document.getElementById("subdivision_" + landId + "_width");
+      var buyerInput = document.getElementById("buyer_" + landId);
+
+      var length = parseInt(lengthInput.value);
+      var width = parseInt(widthInput.value);
+      var buyer = buyerInput.value;
+
+      if (isNaN(length) || isNaN(width) || length <= 0 || width <= 0 || buyer === "") {
+        alert("Please enter valid dimensions for the subdivision (e.g., 50 by 100) and provide a buyer name.");
+        return;
+      }
+
+      var landSizeElement = document.getElementById("land_" + landId + "_size");
+      var landSize = parseInt(landSizeElement.innerText);
+      var remainingArea = landSize;
+
+      var subdivisionArea = length * width;
+      if (subdivisionArea > remainingArea) {
+        alert("Subdivision area exceeds the remaining land area.");
+        return;
+      }
+
+      remainingArea -= subdivisionArea;
+
+      var subdividedLand = {
+        location: "Land " + landId + " (Subdivided)",
+        size: subdivisionArea + " sq. ft.",
+        price: "$" + (subdivisionArea * pricePerSqFt).toLocaleString(),
+        buyer: buyer
+      };
+
+      // Store the subdivided land data in local storage
+      localStorage.setItem("subdividedLand", JSON.stringify(subdividedLand));
+
+      // Redirect to the "page3.html"
+      window.location.href = "page3.html";
+    }
+  </script>
+</body>
+</html>

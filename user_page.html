@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Land Listings</title>
+  <style>
+    body {
+      background-color: lightgrey;
+      display: flex;
+      flex-direction: column;
+      justify-content: top;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .land-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .land-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    .land {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      border: 1px solid black;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .land.available {
+      background-color: green;
+    }
+
+    .land.sold {
+      background-color: red;
+    }
+
+    .popup {
+      display: none;
+      position: absolute;
+      background-color: white;
+      border: 1px solid black;
+      padding: 10px;
+    }
+
+    .popup.show {
+      display: block;
+    }
+
+    .view-map-button {
+      margin-top: 10px;
+    }
+
+    .book-button {
+      margin-top: 10px;
+    }
+  </style>
+  <script>
+    function showPopup(event, location, size, price) {
+      const popup = document.getElementById("popup");
+      const locationElement = document.getElementById("location");
+      const sizeElement = document.getElementById("size");
+      const priceElement = document.getElementById("price");
+      const viewMapButton = document.getElementById("view-map-button");
+      const bookButton = document.getElementById("book-button");
+
+      locationElement.textContent = "Location: " + location;
+      sizeElement.textContent = "Size: " + size;
+      priceElement.textContent = "Price: " + price;
+      viewMapButton.setAttribute("href", "map.pdf");
+      bookButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        // Handle the book functionality here
+        console.log("Book button clicked");
+      });
+
+      const x = event.clientX + window.pageXOffset;
+      const y = event.clientY + window.pageYOffset;
+
+      popup.style.left = x + "px";
+      popup.style.top = y + "px";
+
+      popup.classList.add("show");
+
+      event.stopPropagation();
+    }
+
+    function hidePopup() {
+      const popup = document.getElementById("popup");
+      popup.classList.remove("show");
+    }
+
+    function createLandListings() {
+      const landContainer = document.getElementById("land-container");
+      landContainer.innerHTML = "";
+
+      const landsData = [
+      { name: "Land 1", location: "Location 1", size: "100 sqm", price: "$100,000", status: "available" },
+      { name: "Land 2", location: "Location 2", size: "150 sqm", price: "$150,000", status: "sold" },
+      { name: "Land 3", location: "Location 3", size: "200 sqm", price: "$200,000", status: "available" },
+      { name: "Land 4", location: "Location 4", size: "250 sqm", price: "$250,000", status: "sold" },
+      { name: "Land 5", location: "Location 5", size: "300 sqm", price: "$300,000", status: "available" },
+      { name: "Land 6", location: "Location 6", size: "350 sqm", price: "$350,000", status: "sold" },
+      { name: "Land 7", location: "Location 7", size: "400 sqm", price: "$400,000", status: "available" },
+      { name: "Land 8", location: "Location 8", size: "450 sqm", price: "$450,000", status: "sold" },
+      { name: "Land 9", location: "Location 9", size: "500 sqm", price: "$500,000", status: "available" },
+      { name: "Land 10", location: "Location 10", size: "550 sqm", price: "$550,000", status: "sold" },
+      { name: "Land 11", location: "Location 11", size: "600 sqm", price: "$600,000", status: "available" },
+      { name: "Land 12", location: "Location 12", size: "650 sqm", price: "$650,000", status: "sold" },
+      { name: "Land 13", location: "Location 13", size: "700 sqm", price: "$700,000", status: "available" },
+      { name: "Land 14", location: "Location 14", size: "750 sqm", price: "$750,000", status: "sold" },
+      { name: "Land 15", location: "Location 15", size: "800 sqm", price: "$800,000", status: "available" },
+      { name: "Land 16", location: "Location 16", size: "850 sqm", price: "$850,000", status: "sold" },
+      { name: "Land 17", location: "Location 17", size: "900 sqm", price: "$900,000", status: "available" },
+      { name: "Land 18", location: "Location 18", size: "950 sqm", price: "$950,000", status: "sold" },
+      { name: "Land 19", location: "Location 19", size: "1000 sqm", price: "$1,000,000", status: "available" },
+      { name: "Land 20", location: "Location 20", size: "1050 sqm", price: "$1,050,000", status: "sold" },
+      { name: "Land 21", location: "Location 21", size: "1100 sqm", price: "$1,100,000", status: "available" },
+      { name: "Land 22", location: "Location 22", size: "1150 sqm", price: "$1,150,000", status: "sold" },
+      { name: "Land 23", location: "Location 23", size: "1200 sqm", price: "$1,200,000", status: "available" },
+      { name: "Land 24", location: "Location 24", size: "1250 sqm", price: "$1,250,000", status: "sold" },
+      { name: "Land 25", location: "Location 25", size: "1300 sqm", price: "$1,300,000", status: "available" }
+      ];
+
+      let landRow = null;
+      for (let i = 0; i < landsData.length; i++) {
+        const landData = landsData[i];
+        const land = document.createElement("div");
+        land.classList.add("land");
+        if (i % 5 === 0) {
+          landRow = document.createElement("div");
+          landRow.classList.add("land-row");
+          landContainer.appendChild(landRow);
+        }
+        if (landData.status === "available") {
+          land.classList.add("available");
+          land.addEventListener("click", function (event) {
+            showPopup(event, landData.location, landData.size, landData.price);
+          });
+        } else {
+          land.classList.add("sold");
+        }
+        land.textContent = landData.name;
+        landRow.appendChild(land);
+      }
+    }
+
+    document.addEventListener("click", function (event) {
+      const popup = document.getElementById("popup");
+      if (!popup.contains(event.target)) {
+        hidePopup();
+      }
+    });
+  </script>
+</head>
+<body onload="createLandListings()">
+  <h1>Land Allocation</h1>
+  <div id="popup" class="popup">
+    <span id="location"></span><br>
+    <span id="size"></span><br>
+    <span id="price"></span><br>
+    <a id="view-map-button" class="view-map-button" href="#" target="_blank">View Map</a>
+    <button id="book-button" class="book-button">Book</button>
+  </div>
+
+  <div id="land-container" class="land-container"></div>
+</body>
+</html>

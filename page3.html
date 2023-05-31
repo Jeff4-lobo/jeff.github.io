@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sold Lands</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Sold Lands</h1>
+
+  <table id="soldLandsTable">
+    <tr>
+      <th>Location</th>
+      <th>Size</th>
+      <th>Price</th>
+      <th>Buyer</th>
+    </tr>
+  </table>
+
+  <script>
+    // Retrieve the subdivided land data from local storage
+    var subdividedLandData = localStorage.getItem("subdividedLand");
+
+    // Check if there is any subdivided land data
+    if (subdividedLandData) {
+      var subdividedLand = JSON.parse(subdividedLandData);
+
+      var table = document.getElementById("soldLandsTable");
+      var row = table.insertRow(-1);
+      var locationCell = row.insertCell(0);
+      var sizeCell = row.insertCell(1);
+      var priceCell = row.insertCell(2);
+      var buyerCell = row.insertCell(3);
+
+      locationCell.innerHTML = subdividedLand.location;
+      sizeCell.innerHTML = subdividedLand.size;
+      priceCell.innerHTML = subdividedLand.price;
+      buyerCell.innerHTML = subdividedLand.buyer;
+
+      // Clear the stored subdivided land data from local storage
+      localStorage.removeItem("subdividedLand");
+    }
+  </script>
+</body>
+</html>
